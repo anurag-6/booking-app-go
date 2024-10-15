@@ -3,12 +3,25 @@ package main
 import (
 	"booking-app/helper"
 	"fmt"
-	"strconv"
+    "sync"
+    "time"
 )
 
 const MaxTickets = 50
 var conferenceName = "Go Conference"
 var remainingTickets uint = 50
+
+
+// Define a struct for booking details
+type Booking struct {
+    firstName   string
+    lastName    string
+    email       string
+    userTickets uint
+}
+
+
+var wg =  sync.WaitGroup{}
 
 func main(){
 
@@ -21,8 +34,11 @@ func main(){
     var userLocation string
     // create a slice of maps with least value 0, means it can be evolved later
     // Use make to create a slice with initial capacity for 0 elements
-    bookings := make([]map[string]string, 0)
-    
+    // bookings := make([]map[string]string, 0)
+
+    bookings := make([]Booking, 0)
+
+
     for {
 
         firstName, lastName, email, userLocation, userTickets  = getUserInputs()
@@ -64,22 +80,34 @@ func main(){
         
         // add the booking to slice object
 
-        // Create a new map object
-        bookingMap := make(map[string]string)
-        bookingMap["firstName"] = firstName
-        bookingMap["lastName"] = lastName
-        bookingMap["email"] = email
-        bookingMap["userTickets"] = strconv.FormatUint(uint64(userTickets), 10)
-        bookings = append(bookings, bookingMap)
+        // Create a new Booking struct and populate the fields
+        booking := Booking{
+            firstName:   firstName,
+            lastName:    lastName,
+            email:       email,
+            userTickets: userTickets,
+        }
+        // Append the booking struct to the bookings slice
+        bookings = append(bookings, booking)
 
-        fmt.Printf("Thankyou %v %v for booking %v tickets\nYou will recieve a confirmation email at %v shortly\n", firstName, lastName, userTickets, email)
+        // Old way
+        // Create a new map object
+        // bookingMap := make(map[string]string)
+        // bookingMap["firstName"] = firstName
+        // bookingMap["lastName"] = lastName
+        // bookingMap["email"] = email
+        // bookingMap["userTickets"] = strconv.FormatUint(uint64(userTickets), 10)
+        // bookings = append(bookings, bookingMap)
+
+        wg.Add(1)
+        go sendTicket(booking)
 
         fmt.Printf("Remaining tickets for %v conferece = %v\n", conferenceName, remainingTickets)
 
         // For data privacy only show first name of the booking holders
         firstNames := [] string {}
         for _, holder := range(bookings){
-            firstName := holder["firstName"]
+            firstName := holder.firstName
             firstNames = append(firstNames, firstName)
         }
         fmt.Printf("List of all booking so far.. %v\n", firstNames)
@@ -91,10 +119,9 @@ func main(){
         }else{
             fmt.Println("Welcome to next booking....")
         }
+        wg.Wait()
 
     }
-
-
 
 }
 
@@ -133,3 +160,11 @@ func getUserInputs()(
     return firstName, lastName, email, userLocation, userTickets
 }
 
+func sendTicket(booking Booking){
+    time.Sleep(50 * time.Second)
+    fmt.Println("#####################")
+    fmt.Printf("Thankyou %v %v for booking %v tickets\nYou will recieve a confirmation email at %v shortly\n", booking.firstName, booking.lastName, booking.userTickets, booking.email)
+    fmt.Println("#####################")
+    wg.Done()
+
+}
