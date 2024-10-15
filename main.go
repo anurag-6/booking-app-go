@@ -1,9 +1,9 @@
 package main
 
 import (
+	"booking-app/helper"
 	"fmt"
-	"strings"
-    "booking-app/helper"
+	"strconv"
 )
 
 const MaxTickets = 50
@@ -19,8 +19,10 @@ func main(){
     var email string
     var userTickets uint
     var userLocation string
-    var bookings = []string{}
-
+    // create a slice of maps with least value 0, means it can be evolved later
+    // Use make to create a slice with initial capacity for 0 elements
+    bookings := make([]map[string]string, 0)
+    
     for {
 
         firstName, lastName, email, userLocation, userTickets  = getUserInputs()
@@ -61,7 +63,14 @@ func main(){
         remainingTickets = remainingTickets - userTickets
         
         // add the booking to slice object
-        bookings = append(bookings, firstName + " " + lastName)
+
+        // Create a new map object
+        bookingMap := make(map[string]string)
+        bookingMap["firstName"] = firstName
+        bookingMap["lastName"] = lastName
+        bookingMap["email"] = email
+        bookingMap["userTickets"] = strconv.FormatUint(uint64(userTickets), 10)
+        bookings = append(bookings, bookingMap)
 
         fmt.Printf("Thankyou %v %v for booking %v tickets\nYou will recieve a confirmation email at %v shortly\n", firstName, lastName, userTickets, email)
 
@@ -70,7 +79,7 @@ func main(){
         // For data privacy only show first name of the booking holders
         firstNames := [] string {}
         for _, holder := range(bookings){
-            firstName := strings.Fields(holder)[0]
+            firstName := holder["firstName"]
             firstNames = append(firstNames, firstName)
         }
         fmt.Printf("List of all booking so far.. %v\n", firstNames)
