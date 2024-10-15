@@ -5,15 +5,13 @@ import (
 	"strings"
 )
 
+const MaxTickets = 50
+var conferenceName = "Go Conference"
+var remainingTickets uint = 50
+
 func main(){
 
-    const MaxTickets = 50
-    conferenceName := "Go Conference"
-    var remainingTickets uint = 50
-
-    fmt.Printf("Welcome to the %v booking app...\n", conferenceName)
-    fmt.Printf("We have total of %v tickets and %v are available\n", MaxTickets, remainingTickets)
-    fmt.Print("Get your tickets here to attend\n")
+    greetUser()
 
     var firstName string
     var lastName string
@@ -23,29 +21,11 @@ func main(){
     var bookings = []string{}
 
     for {
-        // uses pointer conecpt to access the memory location of vaiable
-        fmt.Println("Enter the First Name: ")
-        fmt.Scan(&firstName)
 
-        fmt.Println("Enter the Last Name:")
-        fmt.Scan(&lastName)
-
-        fmt.Println("Enter the Email address:")
-        fmt.Scan(&email)
-
-        fmt.Println("Please enter your location")
-        fmt.Scan(&userLocation)
-
-        fmt.Println("Enter the number of tickets needed:")
-        fmt.Scan(&userTickets)
+        firstName, lastName, email, userLocation, userTickets  = getUserInputs()
 
 
-
-        // Basic validation for inputs
-        isValidName := len(firstName) > 2 && len(lastName) > 0
-        isValidEmail := strings.Contains(email, "@")
-        isValidTicketNumber := userTickets > 0 && userTickets <= 50
-
+        isValidName, isValidEmail,isValidTicketNumber := validateUserInputs(firstName, lastName, email, userTickets)
 
         if !isValidName{
             fmt.Println("The First name or Last name entered is invalid")
@@ -109,3 +89,51 @@ func main(){
 }
 
 
+
+func greetUser(){
+    fmt.Printf("Welcome to the %v booking app...\n", conferenceName)
+    fmt.Printf("We have total of %v tickets and %v are available\n", MaxTickets, remainingTickets)
+    fmt.Print("Get your tickets here to attend\n")
+}
+
+
+func getUserInputs()(
+    firstName string,
+    lastName string,
+    email string,
+    userLocation string,
+    userTickets uint){
+
+    // uses pointer conecpt to access the memory location of vaiable
+    fmt.Println("Enter the First Name: ")
+    fmt.Scan(&firstName)
+
+    fmt.Println("Enter the Last Name:")
+    fmt.Scan(&lastName)
+
+    fmt.Println("Enter the Email address:")
+    fmt.Scan(&email)
+
+    fmt.Println("Please enter your location")
+    fmt.Scan(&userLocation)
+
+    fmt.Println("Enter the number of tickets needed:")
+    fmt.Scan(&userTickets)
+
+    return firstName, lastName, email, userLocation, userTickets
+}
+
+func validateUserInputs(
+    firstName string,
+    lastName string,
+    email string,
+    userTickets uint)(bool,  bool, bool){
+
+
+    // Basic validation for inputs
+    isValidName := len(firstName) > 2 && len(lastName) > 0
+    isValidEmail := strings.Contains(email, "@")
+    isValidTicketNumber := userTickets > 0 && userTickets <= 50
+
+    return isValidName, isValidEmail,isValidTicketNumber
+}
