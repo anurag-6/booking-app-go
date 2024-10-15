@@ -1,5 +1,3 @@
-Here's a sample README for your Go "booking-app":
-
 ---
 
 # Booking App
