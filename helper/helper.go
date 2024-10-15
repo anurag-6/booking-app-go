@@ -1,4 +1,4 @@
-package main
+package helper
 
 
 import (
@@ -6,17 +6,18 @@ import (
 )
 
 
-func validateUserInputs(
+func ValidateUserInputs(
     firstName string,
     lastName string,
     email string,
-    userTickets uint)(bool,  bool, bool){
+    userTickets uint,
+    remainingTickets uint)(bool,  bool, bool){
 
 
     // Basic validation for inputs
     isValidName := len(firstName) > 2 && len(lastName) > 0
     isValidEmail := strings.Contains(email, "@")
-    isValidTicketNumber := userTickets > 0 && userTickets <= 50
+    isValidTicketNumber := userTickets > 0 && userTickets <= remainingTickets
 
     return isValidName, isValidEmail,isValidTicketNumber
 }

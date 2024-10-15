@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"strings"
+    "booking-app/helper"
 )
 
 const MaxTickets = 50
@@ -25,7 +26,7 @@ func main(){
         firstName, lastName, email, userLocation, userTickets  = getUserInputs()
 
 
-        isValidName, isValidEmail,isValidTicketNumber := validateUserInputs(firstName, lastName, email, userTickets)
+        isValidName, isValidEmail,isValidTicketNumber := helper.ValidateUserInputs(firstName, lastName, email, userTickets, remainingTickets)
 
         if !isValidName{
             fmt.Println("The First name or Last name entered is invalid")
